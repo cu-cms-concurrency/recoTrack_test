@@ -16,7 +16,7 @@ After running cmsDriver once, it will generate a python configuration file that 
 From here, you will need to go into the recoTrack_
 
 
-
+f
 
 I have included a small python configuration file to rerun the tracking reconstruction.  It works for CMSSW_7_1_0_pre8, using a small RelVal ttbar sample that is currently available.  The goal will obviously be to move to something more stable. 
 
