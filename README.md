@@ -1,6 +1,6 @@
 ### Running the tracking reconstruction from scratch for user generated MC  
 
-Much credit goes towards Matti Kortelainen and Kevin Stenson for this recipe.  Please note: This has only been validated for CMSSW_7_0_0 and above.  
+Much credit goes towards Matti Kortelainen and Kevin Stenson for this recipe.  Please note: This has only been validated for CMSSW_7_1_0 and above.  
 
 I have included configuration file ```recoTrk_userMC_cfg.py``` generated from cmsDriver.py that will run the tracking reconstruction given some initial MC sample.  This (presumably) works for any already generated MC sample that has the necessary steps listed below. The initial MC sample can generated in the following way:
 
