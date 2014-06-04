@@ -10,7 +10,7 @@ cmsDriver.py <Sample-cfi.py-file> -s GEN,SIM,DIGI,L1,DIGI2RAW,HLT --conditions a
 
 The ```<Sample-cfi.py-file>``` is the configuration file for a generic MC sample, where a plethora can be found in:  /uscmst1/prod/sw/cms/slc5_amd64_gccABC/cms/cmssw/CMSSW_X_Y_Z/src/Configuration/Generator/python/
 or, with github:
-https://github.com/kmcdermo/cmssw/tree/CMSSW_X_Y_Z/Configuration/Generator/python
+https://github.com/USER/cmssw/tree/CMSSW_X_Y_Z/Configuration/Generator/python
 
 I choose TTbar at 8TeV for starters, as it seems to be the consensus benchmark for any sort of tracking performance analysis, i.e. ```TTbar_8TeV_cfi.py```. 
 
