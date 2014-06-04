@@ -17,9 +17,6 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 ### conditions
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-# same as input file
-#process.GlobalTag.globaltag = 'PRE_ST62_V8::All'
-# or get it automatically
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 
@@ -38,7 +35,7 @@ process.clustToHits = cms.Sequence(
 )
 # this is the official tracking sequence
 process.tracking = cms.Sequence(
-    process.MeasurementTrackerEvent*
+    process.MeasurementTrackerEvent* #Matti K. noted that these modules are needed for the reconstruction, but for whatever reason are not included in the trackingGlobalReco.  This may change with a given prerelease.
     process.siPixelClusterShapeCache*
     process.trackingGlobalReco
 )
