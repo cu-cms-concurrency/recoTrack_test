@@ -63,7 +63,7 @@ MyReRecoEventContent = cms.PSet(
 )
 process.out = cms.OutputModule("PoolOutputModule",
     MyReRecoEventContent,
-    fileName = cms.untracked.string('reco_trk.root')
+    fileName = cms.untracked.string('reReco_trk.root')
 )
 
 ### paths
