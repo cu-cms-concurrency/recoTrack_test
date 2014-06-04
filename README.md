@@ -25,21 +25,25 @@ If you would rather generate the tracking reco config file yourself instead of u
 cmsDriver.py step3 -s RAW2DIGI,L1Reco,RECO --conditions auto:startup --datatier GEN-SIM-RECO --eventcontent FEVTDEBUGHLT -n <number-of-events> --filein <path-to-input-root-file> --no_exec
 ```
 
+This will auto generate a python configuration file, ```<auto-gen-RECO-cfg.py-file>```.  You will now have to make some edits to the generated python config file.  Append the end of the document with the following lines:
 
-
+```python
 process.myreconstruction = cms.Sequence(process.trackerlocalreco+
                                         process.muonlocalreco+process.calolocalreco+process.offlineBeamSpot+
                                         process.MeasurementTrackerEvent+
                                         process.siPixelClusterShapeCache+
                                         process.standalonemuontracking+process.recopixelvertexing+process.iterTracking+
                                         process.electronSeedsSeq+process.doAlldEdXEstimators+process.trackExtrapolator+
-                                        process.vertexreco+process.logErrorHarvester)
+                                        process.vertexreco+process.logErrorHarvester
+                                        )
 process.reconstruction_step = cms.Path(process.myreconstruction)
+```
 
+Additionally, you will need delete/comment out the first instance of ```process.reconstruction_step = cms.Path()``` and then move the process.schedule line to the end of the python file.  You may also want to change the name of the output root file.  After all the edits have been made, execute with:
+
+```cmsRun <auto-gen-RECO-cfg.py-file>```
 
 ----------------------
-
-
 
 
 I have also included a small python configuration file to rerun the tracking reconstruction.  It works for CMSSW_7_1_0_pre8, using a small RelVal ttbar sample that is currently available.  The goal will obviously be to move to something more stable, but this works fine if you do not want to go through the hassle of generating your own MC sample. 
