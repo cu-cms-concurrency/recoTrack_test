@@ -10,13 +10,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 ### source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-
-'/store/relval/CMSSW_7_1_0_pre8/RelValTTbar_13/GEN-SIM-RECO/PU25ns_PRE_LS171_V9-v1/00000/04EE8F23-9CE7-E311-AAC1-002590596498.root'
-
-#'/store/relval/CMSSW_7_1_0_pre8/RelValTTbar_13/GEN-SIM-DIGI-RAW-HLTDEBUG/PU25ns_PRE_LS171_V9-v1/00000/104FC845-61E7-E311-BBEA-0025905A60B2.root'
-
-#'/store/relval/CMSSW_7_1_0_pre8/RelValZTT_13/DQM/PU25ns_PRE_LS171_V9-v1/00000/105CF56E-80E7-E311-97FC-0030486792B4.root'
-
+    '/store/relval/CMSSW_7_1_0_pre8/RelValTTbar_13/GEN-SIM-RECO/PU25ns_PRE_LS171_V9-v1/00000/04EE8F23-9CE7-E311-AAC1-002590596498.root'
     )
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
