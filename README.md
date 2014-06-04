@@ -1,7 +1,8 @@
-recoTrack_test
-==============
+### Running the tracking reconstruction from scratch for user generated MC  
 
-I have included configuration file ```recoTrack_userMC_cfg.py``` generated from cmsDriver.py that will run the tracking reconstruction given some initial MC sample.  The initial MC sample can generated in the following way:
+Much credit goes towards Matti Kortelainen and Kevin Stenson for this recipe.  Please note: This has only been validated for CMSSW_7_0_0 and above.  
+
+I have included configuration file ```recoTrack_userMC_cfg.py``` generated from cmsDriver.py that will run the tracking reconstruction given some initial MC sample.  This (presumably) works for any already generated MC sample that has the necessary steps listed below. The initial MC sample can generated in the following way:
 
 ```
 cmsDriver.py <Sample-cfi.py-file> -s GEN,SIM,DIGI,L1,DIGI2RAW,HLT --conditions auto:startup --eventcontent FEVTDEBUGHLT  -n <number of events> --no_exec
@@ -43,12 +44,11 @@ Additionally, you will need delete/comment out the first instance of ```process.
 
 ```cmsRun <auto-gen-RECO-cfg.py-file>```
 
-----------------------
+### Rerunning the tracking reconstruction with small RelVal Samples
 
+I have also included a small python configuration file to **rerun** the tracking reconstruction.  It works for CMSSW_7_1_0_pre8, using a small RelVal ttbar sample that is currently available.  The goal will obviously be to move to something more stable, but this works fine if you do not want to go through the hassle of generating your own MC sample. 
 
-I have also included a small python configuration file to rerun the tracking reconstruction.  It works for CMSSW_7_1_0_pre8, using a small RelVal ttbar sample that is currently available.  The goal will obviously be to move to something more stable, but this works fine if you do not want to go through the hassle of generating your own MC sample. 
-
-So after setting up the release area, all you have to do is : cmsRun reRecoTrack_cfg.py
+So after setting up the release area, all you have to do is: ```cmsRun reRecoTrack_cfg.py```
 
 
 The instructions (and subsequent modifications) came from the following question on CMS HyperNews:
