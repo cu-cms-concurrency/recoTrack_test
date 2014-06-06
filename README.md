@@ -43,6 +43,21 @@ Additionally, you will need delete/comment out the first instance of ```process.
 
 ```cmsRun <auto-gen-RECO-cfg.py-file>```
 
+#### Changes for running on CMSSW_5_3_13
+
+Minor changes need to be made from the above recipe.  The first is after running cmsDriver to produce a python file for first generating the MC, you need to edit line 26 to the following: 
+```
+process.load('HLTrigger.Configuration.HLT_7E33v2_cff')         
+```
+For whatever reason, cmsDriver chooses the wrong HLT menu (GRun), and needs 7E33v2 instead in order to process the HLT step.
+
+After generating the MC with cmsRun, in recoTk_userMC_cfg.py,  process.myconstruction needs to have 
+```
+process.MeasurementTrackerEvent+process.siPixelClusterShapeCache+
+```
+commented out, as this is something for post 7_1_0.
+
+
 ### Rerunning the tracking reconstruction with small RelVal Samples
 
 I have also included a small python configuration file to **rerun** the tracking reconstruction.  It works for CMSSW_7_1_0_pre8, using a small RelVal ttbar sample that is currently available.  The goal will obviously be to move to something more stable, but this works fine if you do not want to go through the hassle of generating your own MC sample. 
