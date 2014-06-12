@@ -88,7 +88,7 @@ crab -getoutput -c <ui_working_dir>
 
 Once you have the stdout files, you can get the time profiling with: ```./getTimingModules.sh <input_dir> <out-dir>```
 
-Make sure to specify the right path for the input stdout files (```<ui_working_dir>/res/```)!  The output will be a bunch of .csv files and averages file in the directory of your choice.  Both CPU and wall clock time are recorded for each module.  I will soon add a file for the time of each iteration (sum of each of the modules for a given iteration).
+Make sure to specify the right path for the input stdout files (```<ui_working_dir>/res/``` -- res is where the stdouts are sitting)!  The output will be a .csv file for each iteration in the reco, containing the average time per event spent in a given module (in that particular iterative step) for each CRAB job.  Both CPU and wall clock time are recorded for each module.  The results for each module are then averaged over these csv files to produce an average module time per event for all events, stored in the averages csv files.  The total csv files then compute the total average time it takes for each iteration to complete for the dataset.  These files are located in ```<out-dir>```, specified by the user.
 
 ### Customize the iterations for Tracking using recoTrack_MC_5313_cfg.py
 

@@ -209,11 +209,13 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
 
   if [ $iteration != "ConvStep" ] ; then
 
-      grep "$iteration" ${out_dir}/averages_CPU.csv | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" >> ${out_dir}/totals.csv
+      grep "$iteration" ${out_dir}/averages_CPU.csv | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" >> ${out_dir}/totals_CPU.csv
+      grep "$iteration" ${out_dir}/averages_REAL.csv | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" >> ${out_dir}/totals_REAL.csv
 
   else
 
-      grep -v "conversionStepTracks" ${out_dir}/averages_CPU.csv | grep -i "conv" | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" ${out_dir}/totals.csv
+      grep -v "conversionStepTracks" ${out_dir}/averages_CPU.csv | grep -i "conv" | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" >> ${out_dir}/totals_CPU.csv
+      grep -v "conversionStepTracks" ${out_dir}/averages_REAL.csv | grep -i "conv" | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" >> ${out_dir}/totals_REAL.csv
 
   fi
 
