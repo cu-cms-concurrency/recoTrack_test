@@ -1,218 +1,204 @@
 #! /bin/bash
 
+############################################################
+# Compute timing info for all modules in iterativeTracking
+############################################################
+
+##################
+out_dir=$1
+##################
+
 # create output directory
 
-if [ ! -d timing_info ] ; then
-    mkdir timing_info
+if [ -d $out_dir ] ; then # if it exists, delete all files and start over
+
+    rm -r $out_dir
+    mkdir $out_dir
+
+elif [ ! -d $out_dir ] ; then # create otherwise
+
+    mkdir $out_dir
+
 fi
 
-# Compute timing info for all modules in iterativeTracking
+##########################################
 
-for tkReco_module in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep ConvStep #remove all csv files
-  do
-  
-  rm timing_info/${tkReco_module}_CPU_sorted.csv
-  rm timing_info/${tkReco_module}_REAL_sorted.csv
-
-done
-
-rm timing_info/generalTracks_CPU.csv
-rm timing_info/generalTracks_REAL.csv
-rm timing_info/conversionStepTracks_CPU.csv
-rm timing_info/conversionStepTracks_REAL.csv
-rm averages_CPU.csv
-rm averages_REAL.csv
-
-#make a CSV for each Iteration, either CPU or REAL
+# make a CSV for each iterative step, storing timing info of each module for both CPU and WALL CLOCK (REAL)
 
 for filenumber in $(seq 1 `find . -name 'CMSSW_*.stdout' | wc -l`) #begin loop over all stdouts
   do
 
-  for module in initialStepSeeds initialStepTrackCandidates initialStepTracks initialStepSelector #loop over initialStep, missing Clusters, could add an if statement later
+  for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep generalTracks ConvStep conversionStepTracks #begin loop over the iterations 
     do
+
+    if [ $iteration = "initialStep" ] ; then #initialStep has no ${iteration}Clusters
+	for module in ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector 
+	  do
+	  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	  
+	done #end loop over modules for initialStep
+
+    elif [ $iteration = "lowPtTripletStep" ] || [ $iteration = "pixelPairStep" ] || [ $iteration = "pixelLessStep" ] || [ $iteration = "tobTecStep" ] ; then            
+	
+ 	for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector #begin loop over modules in each iteration (except initial, detached, mixed)                               
+	  do
+	  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	done #end loop over modules for elif                                                                                                                                                                                    
     
-    grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> timing_info/initialStep_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> timing_info/initialStep_REAL.csv)  
+    elif [ $iteration = "detachedTripletStep" ] ; then
 
-  done # end loop for initialStep
+	for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector ${iteration} #begin loop over modules in detachedTripletStep
+	  do
 
-  for iteration in lowPtTripletStep pixelPairStep pixelLessStep tobTecStep #begin loop over the iterations (exept initialStep, mixedTripletStep, detachedTripletStep  
-    do
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	done #end loop over modules for elif  - detachedTripletStep  
+ 
+    elif [ $iteration = "mixedTripletStep" ] ; then
 
-    for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector #begin loop over modules in each iteration   
-      do    
+	for module in ${iteration}Clusters ${iteration}SeedsA ${iteration}SeedsB ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector ${iteration} #begin loop over modules in mixeedTripletStep
+	  do
 
-      grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> timing_info/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> timing_info/${iteration}_REAL.csv)  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	done #end loop over modules for elif  - mixedTripletStep  
+
+    elif [ $iteration = "generalTracks" ] || [ $iteration = "conversionStepTracks" ] ; then
+	
+	grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $iteration" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$iteration" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$iteration" >> ${out_dir}/${iteration}_REAL.csv)  
+	
+    elif [ $iteration = "ConvStep" ] ; then
+	
+	for module in convClusters photonConvTrajSeedFromSingleLeg convTrackCandidates convStepTracks convStepSelector #ConvStep in iterativeTacking
+	  do
+
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+
+	done #end loop over modules for elif  - ConvStep
+	
+    fi # end if conditional to match iterativeTk sequence to right modules
+    
+  done # end loop over iterations  
+
+done # end loop over stdout files
+
+########################### 
+
+#Sort and get average time --> may move to a ROOT macro for better access to statistics
+
+for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep generalTracks ConvStep conversionStepTracks #begin loop over the iterations 
+  do
+  
+  if [ $iteration = "initialStep" ] ; then #initialStep has no ${iteration}Clusters
+      for module in ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector 
+	do
+
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	
+      done #end loop over modules for initialStep
       
-    done #end loop over modules 
+  elif [ $iteration = "lowPtTripletStep" ] || [ $iteration = "pixelPairStep" ] ; then #keep average sorted by actual run order of modules as defined in recoTrack_MC_***_cfg.py
+      
+      for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector #begin loop over modules                               
+	do
 
-  done #end loop over iterations except mixedTripletStep, initialStep, detachedTripletStep
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	
+      done #end loop over modules for elif                                                                                                                                                                                    
+      
+  elif [ $iteration = "detachedTripletStep" ] ; then
+      
+      for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector ${iteration} #begin loop over modules in detachedTripletStep
+	do
+	
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	
+      done #end loop over modules for elif  - detachedTripletStep  
+      
+  elif [ $iteration = "mixedTripletStep" ] ; then
+      
+      for module in ${iteration}Clusters ${iteration}SeedsA ${iteration}SeedsB ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector ${iteration} #begin loop over modules in mixeedTripletStep
+	do
+
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv	
+
+      done #end loop over modules for elif  - mixedTripletStep  
+      
+  elif [ $iteration = "pixelLessStep" ] || [ $iteration = "tobTecStep" ] ; then            
+
+      for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector #begin loop over modules                               
+	do
+
+      	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+
+      done #end loop over next two iterations after mixed
+      
+  elif [ $iteration = "generalTracks" ] ; then
+      
+      grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+      grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+      
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_CPU.csv
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_REAL.csv
+      
+  elif [ $iteration = "ConvStep" ] ; then
+      
+      for module in convClusters photonConvTrajSeedFromSingleLeg convTrackCandidates convStepTracks convStepSelector #ConvStep in iterativeTacking
+	do
+
+      	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	
+      done #end loop over modules for elif  - ConvStep
+      
+  elif [ $iteration = "conversionStepTracks" ] ; then
+      
+      grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
+      grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
+      
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_CPU.csv
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_REAL.csv
+
+  fi # end if conditional to match iterativeTk sequence to right modules
   
-  for module in detachedTripletStepClusters detachedTripletStepSeeds detachedTripletStepTrackCandidates detachedTripletStepTracks detachedTripletStepSelector detachedTripletStep #begin loop over modules in mixedTripletStep
-    do
-    
-    grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> timing_info/detachedTripletStep_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> timing_info/detachedTripletStep_REAL.csv)  
-    
-  done #end loop over modules in mixedTripletStep
+done # end sort and averaging for each module
 
-  for module in mixedTripletStepClusters mixedTripletStepSeedsA mixedTripletStepSeedsB mixedTripletStepSeeds mixedTripletStepTrackCandidates mixedTripletStepTracks mixedTripletStepSelector mixedTripletStep #begin loop over modules in mixedTripletStep
-    do
-    
-    grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> timing_info/mixedTripletStep_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> timing_info/mixedTripletStep_REAL.csv)  
-    
-  done #end loop over modules in mixedTripletStep
+##########################################
 
-  # create CSV for module in tkReco "generalTracks"
-  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* generalTracks" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,generalTracks\n" "$(cut -d " " -f 4)" >> timing_info/generalTracks_CPU.csv) >  >(printf "%s,generalTracks\n" "$(cut -d " " -f 7)" >> timing_info/generalTracks_REAL.csv)  
+# Remove unsorted files, only keep sorted
 
-
-  for module in convClusters photonConvTrajSeedFromSingleLeg convTrackCandidates convStepTracks convStepSelector #ConvStep in iterativeTacking
-    do
-    
-    grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> timing_info/ConvStep_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> timing_info/ConvStep_REAL.csv)  
-
-  done
-
-  # create CSV for module in tkReco "conversionStepTracks"
-  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* conversionStepTracks" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,conversionStepTracks\n" "$(cut -d " " -f 4)" >> timing_info/conversionStepTracks_CPU.csv) >  >(printf "%s,conversionStepTracks\n" "$(cut -d " " -f 7)" >> timing_info/conversionStepTracks_REAL.csv)  
-
-done #end loop over all files
-
-
-
-########################### Sort and get "averages"
-
-
-
-
-# Sort by modules to make it easier to manipulate the files
-
-for module in initialStepSeeds initialStepTrackCandidates initialStepTracks initialStepSelector #loop over initialStep
-  do
-
-#  echo "here $module"
-  
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/initialStep_CPU.csv >> timing_info/initialStep_CPU_sorted.csv
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/initialStep_REAL.csv >> timing_info/initialStep_REAL_sorted.csv
-  
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/initialStep_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_CPU.csv
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/initialStep_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_REAL.csv
-
-done
-
-for iteration in lowPtTripletStep pixelPairStep pixelLessStep tobTecStep  
-  do
-
-  for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector 
-    do
-
- #     echo "here $module"
-
-    grep -x "[0-9]\.[0-9].*,$module" timing_info/${iteration}_CPU.csv >> timing_info/${iteration}_CPU_sorted.csv
-    grep -x "[0-9]\.[0-9].*,$module" timing_info/${iteration}_REAL.csv >> timing_info/${iteration}_REAL_sorted.csv
-
-    grep -x "[0.9]\.[0.9].*,$module" timing_info/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_CPU.csv
-    grep -x "[0.9]\.[0.9].*,$module" timing_info/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_REAL.csv
-
-  done
-
-done
-
-#Sort detached
-for module in detachedTripletStepClusters detachedTripletStepSeeds detachedTripletStepTrackCandidates detachedTripletStepTracks detachedTripletStepSelector detachedTripletStep
-  do
-  #echo "here $module"
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/detachedTripletStep_CPU.csv >> timing_info/detachedTripletStep_CPU_sorted.csv
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/detachedTripletStep_REAL.csv >> timing_info/detachedTripletStep_REAL_sorted.csv
-
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/detachedTripletStep_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_CPU.csv
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/detachedTripletStep_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_REAL.csv
-
-done
-
-# Sort mixed
-for module in mixedTripletStepClusters mixedTripletStepSeedsA mixedTripletStepSeedsB mixedTripletStepSeeds mixedTripletStepTrackCandidates mixedTripletStepTracks mixedTripletStepSelector mixedTripletStep #begin loop over modules in mixedTripletStep
-  do
-  #echo "here $module"
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/mixedTripletStep_CPU.csv >> timing_info/mixedTripletStep_CPU_sorted.csv
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/mixedTripletStep_REAL.csv >> timing_info/mixedTripletStep_REAL_sorted.csv
-
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/mixedTripletStep_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_CPU.csv
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/mixedTripletStep_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_REAL.csv
-
-done
-
-#Average Gen. tracks
-  #echo "here generalTracks"
-grep -x "[0.9]\.[0.9].*,generalTracks" timing_info/generalTracks_CPU.csv | printf "%s,generalTracks\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" >> averages_CPU.csv
-grep -x "[0.9]\.[0.9].*,generalTracks" timing_info/generalTracks_REAL.csv | printf "%s,generalTracks\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" >> averages_REAL.csv
-
-for module in convClusters photonConvTrajSeedFromSingleLeg convTrackCandidates convStepTracks convStepSelector #ConvStep in iterativeTacking
-  do
-  #echo "here $module"
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/ConvStep_CPU.csv >> timing_info/ConvStep_CPU_sorted.csv
-  grep -x "[0-9]\.[0-9].*,$module" timing_info/ConvStep_REAL.csv >> timing_info/ConvStep_REAL_sorted.csv
-
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/ConvStep_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_CPU.csv
-  grep -x "[0.9]\.[0.9].*,$module" timing_info/ConvStep_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> averages_REAL.csv
-
-done
-
-#Average conv tracks
-
-#  echo "here conversionTracks"
-grep -x "[0.9]\.[0.9].*,conversionStepTracks" timing_info/conversionStepTracks_CPU.csv | printf "%s,conversionStepTracks\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" >> averages_CPU.csv
-grep -x "[0.9]\.[0.9].*,conversionStepTracks" timing_info/conversionStepTracks_REAL.csv | printf "%s,conversionStepTracks\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" >> averages_REAL.csv
-
-for tkReco_module in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep ConvStep #remove all temp csv files (except general/conversionStepTracks)
+for tkReco_module in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep generalTracks ConvStep conversionStepTracks #remove all csv files
   do
   
-  rm timing_info/${tkReco_module}_CPU.csv
-  rm timing_info/${tkReco_module}_REAL.csv
+  rm ${out_dir}/${tkReco_module}_CPU.csv
+  rm ${out_dir}/${tkReco_module}_REAL.csv
 
 done
 
+##########################################
 
 
 
-
-
-#
-#  for module in pixelPairStepClusters pixelPairStepSeeds pixelPairStepTrackCandidates pixelPairStepTracks pixelPairStepSelector
-#    do
-#
-#    grep "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> timing_info/pixelPairStep_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> timing_info/pixelPairStep_REAL.csv) 
-#
-#    done
-#
-
-
-#Compute the totals for each iteration and save to the end of the csv
-
-#
-#for module in initialStepSeeds initialStepTrackCandidates initialStepTracks initialStepSelector                                                                                                                                           
-#  do    
-#
-#  total_files_CPU=$(grep "$module" initialStep_CPU.csv | wc -l)
-#  
-#  
-#  for i in $total_files_CPU #i is the iterator for essentially the amount of files that returned an output from the first nested loop
-#    do
-#
-#    
-#
-#    done
-#
-#  total_files_REAL=$(grep "$module" initialStep_REAL.csv | wc -l)
-#
-#  for i in $total_files_REAL #i is the iterator for essentially the amount of files that returned an output from the first nested loop
-#    do
-#
-#    
-#
-#    done
-#
-#  
-#  
-#
-#done
-#
