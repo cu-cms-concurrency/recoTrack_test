@@ -86,8 +86,7 @@ Check every now and then to see if the jobs completed with ```crab -status -c <u
 crab -getoutput -c <ui_working_dir>
 ```
 
-Once you have the stdout files, you can the time profiling with:
-```./getTimingModules.sh```
+Once you have the stdout files, you can the time profiling with: ```./getTimingModules.sh```
 
 Make sure you specify the directory to the log files!  The output will be a bunch of .csv files and averages file.  Both CPU and wall clock time are recorded for each module.  I will soon add a file for the time of each iteration (sum of each of the modules for a given iteration).
 
