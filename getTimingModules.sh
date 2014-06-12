@@ -5,7 +5,8 @@
 ############################################################
 
 ##################
-out_dir=$1
+in_dir=$1
+out_dir=$2
 ##################
 
 # create output directory
@@ -35,7 +36,7 @@ for filenumber in $(seq 1 `find . -name 'CMSSW_*.stdout' | wc -l`) #begin loop o
 	for module in ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector 
 	  do
 	  
-	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" ${in_dir}/CMSSW_${filenumber}.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
 	  
 	done #end loop over modules for initialStep
 
@@ -44,7 +45,7 @@ for filenumber in $(seq 1 `find . -name 'CMSSW_*.stdout' | wc -l`) #begin loop o
  	for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector #begin loop over modules in each iteration (except initial, detached, mixed)                               
 	  do
 	  
-	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" ${in_dir}/CMSSW_${filenumber}.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
 	done #end loop over modules for elif                                                                                                                                                                                    
     
     elif [ $iteration = "detachedTripletStep" ] ; then
@@ -52,7 +53,7 @@ for filenumber in $(seq 1 `find . -name 'CMSSW_*.stdout' | wc -l`) #begin loop o
 	for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector ${iteration} #begin loop over modules in detachedTripletStep
 	  do
 
-	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" ${in_dir}/CMSSW_${filenumber}.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
 	done #end loop over modules for elif  - detachedTripletStep  
  
     elif [ $iteration = "mixedTripletStep" ] ; then
@@ -60,19 +61,19 @@ for filenumber in $(seq 1 `find . -name 'CMSSW_*.stdout' | wc -l`) #begin loop o
 	for module in ${iteration}Clusters ${iteration}SeedsA ${iteration}SeedsB ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector ${iteration} #begin loop over modules in mixeedTripletStep
 	  do
 
-	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" ${in_dir}/CMSSW_${filenumber}.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
 	done #end loop over modules for elif  - mixedTripletStep  
 
     elif [ $iteration = "generalTracks" ] || [ $iteration = "conversionStepTracks" ] ; then
 	
-	grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $iteration" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$iteration" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$iteration" >> ${out_dir}/${iteration}_REAL.csv)  
+	grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $iteration" ${in_dir}/CMSSW_${filenumber}.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$iteration" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$iteration" >> ${out_dir}/${iteration}_REAL.csv)  
 	
     elif [ $iteration = "ConvStep" ] ; then
 	
 	for module in convClusters photonConvTrajSeedFromSingleLeg convTrackCandidates convStepTracks convStepSelector #ConvStep in iterativeTacking
 	  do
 
-	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" /uscms/home/kmcdermo/Concurrency/CMSSW_5_3_13/src/trackingTutorial/ttbar_5_3_13_timing/res/CMSSW_$filenumber.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
+	  grep -x "TimeReport   [0-9]\.[0-9][0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]*   [0-9]\.[0-9]* $module" ${in_dir}/CMSSW_${filenumber}.stdout | tee >(printf "%s,%s\n" "$(cut -d " " -f 4)" "$module" >> ${out_dir}/${iteration}_CPU.csv) >  >(printf "%s,%s\n" "$(cut -d " " -f 7)" "$module" >> ${out_dir}/${iteration}_REAL.csv)  
 
 	done #end loop over modules for elif  - ConvStep
 	
