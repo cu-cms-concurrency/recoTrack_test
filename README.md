@@ -1,6 +1,6 @@
 ### Running the tracking reconstruction from scratch for user generated MC  
 
-Much credit goes towards Matti Kortelainen and Kevin Stenson for this recipe.  Please note: This has only been validated for CMSSW_7_0_0 and above.  
+Much credit goes towards Matti Kortelainen and Kevin Stenson for this recipe.  Please note: This has only been validated for CMSSW_7_1_0 and above.  
 
 I have included configuration file ```recoTrk_userMC_cfg.py``` generated from cmsDriver.py that will run the tracking reconstruction given some initial MC sample.  This (presumably) works for any already generated MC sample that has the necessary steps listed below. The initial MC sample can generated in the following way:
 
@@ -8,9 +8,8 @@ I have included configuration file ```recoTrk_userMC_cfg.py``` generated from cm
 cmsDriver.py <Sample-cfi.py-file> -s GEN,SIM,DIGI,L1,DIGI2RAW,HLT --conditions auto:startup --eventcontent FEVTDEBUGHLT  -n <number of events> --no_exec
 ```
 
-The ```<Sample-cfi.py-file>``` is the configuration file for a generic MC sample, where a plethora can be found in:  /uscmst1/prod/sw/cms/slc5_amd64_gccABC/cms/cmssw/CMSSW_X_Y_Z/src/Configuration/Generator/python/
-or, with github:
-https://github.com/kmcdermo/cmssw/tree/CMSSW_X_Y_Z/Configuration/Generator/python
+The ```<Sample-cfi.py-file>``` is the configuration file for a generic MC sample, where a plethora can be found in github:
+https://github.com/USER/cmssw/tree/CMSSW_X_Y_Z/Configuration/Generator/python
 
 I choose TTbar at 8TeV for starters, as it seems to be the consensus benchmark for any sort of tracking performance analysis, i.e. ```TTbar_8TeV_cfi.py```. 
 
@@ -43,6 +42,21 @@ process.reconstruction_step = cms.Path(process.myreconstruction)
 Additionally, you will need delete/comment out the first instance of ```process.reconstruction_step = cms.Path()``` and then move the process.schedule line to the end of the python file.  You may also want to change the name of the output root file.  After all the edits have been made, execute with:
 
 ```cmsRun <auto-gen-RECO-cfg.py-file>```
+
+#### Changes for running on CMSSW_5_3_13
+
+Minor changes need to be made from the above recipe.  The first is after running cmsDriver to produce a python file for first generating the MC, you need to edit line 26 to the following: 
+```
+process.load('HLTrigger.Configuration.HLT_7E33v2_cff')         
+```
+For whatever reason, cmsDriver chooses the wrong HLT menu (GRun), and needs 7E33v2 instead in order to process the HLT step.
+
+After generating the MC with cmsRun, in recoTk_userMC_cfg.py,  process.myconstruction needs to have 
+```
+process.MeasurementTrackerEvent+process.siPixelClusterShapeCache+
+```
+commented out, as this is something for post 7_1_0.
+
 
 ### Rerunning the tracking reconstruction with small RelVal Samples
 

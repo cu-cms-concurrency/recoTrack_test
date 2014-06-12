@@ -35,7 +35,7 @@ for filenumber in $(seq 1 `find . -name 'CMSSW_*.stdout' | wc -l`) #begin loop o
 
   done # end loop for initialStep
 
-  for iteration in lowPtTripletStep pixelPairStep pixelLessStep tobTecStep #begin loop over the iterations (exept initialStep, mixedTripletStep, detachedTripletStep
+  for iteration in lowPtTripletStep pixelPairStep pixelLessStep tobTecStep #begin loop over the iterations (exept initialStep, mixedTripletStep, detachedTripletStep  
     do
 
     for module in ${iteration}Clusters ${iteration}Seeds ${iteration}TrackCandidates ${iteration}Tracks ${iteration}Selector #begin loop over modules in each iteration   
