@@ -52,7 +52,7 @@ Additionally, you will need delete/comment out the first instance of ```process.
 
 ```cmsRun <auto-gen-RECO-cfg.py-file>```
 
-### Run Reco with relVal samples for CMSSW_5_3_13 on the LPCCAF
+### Run Reco and get average time spent in each module per event with relVal samples for CMSSW_5_3_13 on the LPCCAF
 
 To run over lots of samples to obtain timing info, we will need to submit jobs to CRAB (version 2 at the moment) on the LPCCAF, the condor cluster for the CMS LPC T3, which is NOT grid accesible.  To begin, ssh into cmslpc-sl5.  
 
@@ -86,9 +86,9 @@ Check every now and then to see if the jobs completed with ```crab -status -c <u
 crab -getoutput -c <ui_working_dir>
 ```
 
-Once you have the stdout files, you can the time profiling with: ```./getTimingModules.sh```
+Once you have the stdout files, you can get the time profiling with: ```./getTimingModules.sh <input_dir> <out-dir>```
 
-Make sure you specify the directory to the log files!  The output will be a bunch of .csv files and averages file.  Both CPU and wall clock time are recorded for each module.  I will soon add a file for the time of each iteration (sum of each of the modules for a given iteration).
+Make sure to specify the right path for the input stdout files (```<ui_working_dir>/res/```)!  The output will be a bunch of .csv files and averages file in the directory of your choice.  Both CPU and wall clock time are recorded for each module.  I will soon add a file for the time of each iteration (sum of each of the modules for a given iteration).
 
 ### Customize the iterations for Tracking using recoTrack_MC_5313_cfg.py
 
