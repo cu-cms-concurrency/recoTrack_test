@@ -93,11 +93,32 @@ Make sure you specify the directory to the log files!  The output will be a bunc
 
 ### Customize the iterations for Tracking using recoTrack_MC_5313_cfg.py
 
-With all the modules imported in the python file (just copied from RecoTracker.Configuration.iterativeTracking_cff), you can set your own steps for the iterative tracking (here, in process.myiterTracking).  Note: the steps are dependent on each other, so if you remove step N and try to run N+1, it will crash!  To prevent this from happening, you will need to 
+With all the modules imported in the python file (just copied from RecoTracker.IterativeTracking.iterativeTk_cff), you can set your own steps for the iterative tracking (here, in process.myiterTracking).  Note: the steps are dependent on each other, so if you remove step N and keep N+1, it will crash!  To prevent this from happening, you will need to go to the cff file for each iteration, and look and see what it does to remove clusters from the previous iteration (defined first in ${iteration}StepClusters).  You will want to change the configuration in your cfg file to match the N-1 cluster remover.  
 
+For example, say you want to skip the LowPtTripletStep, going from InitialStep to PixelPairStep, add thie following to the ```recoTrack_MC_5313_cfg.py``` file...
 
+```python
+# NEW CLUSTERS (remove previously used clusters)
+PixelPairStepClusters = cms.EDProducer("TrackClusterRemover",
+    clusterLessSolution= cms.bool(True),
+    trajectories = cms.InputTag("initialStepTracks"),
+    overrideTrkQuals = cms.InputTag('initialStepSelector','initialStep'),
+    TrackQuality = cms.string('highPurity'),
+    minNumberOfLayersWithMeasBeforeFiltering = cms.int32(0),
+    pixelClusters = cms.InputTag("siPixelClusters"),
+    stripClusters = cms.InputTag("siStripClusters"),
+    Common = cms.PSet(
+       maxChi2 = cms.double(9.0)
+    )
+)
+```
 
+If you notice, all I did was copy the LowPtTripletStepClusters to this file (from RecoTracker.IterativeTracking.LowPtTripletStep_cff) and renamed the variable as PixelPairStepClusters to accurately reflect the change in the tracking.  You can of course mix and match modules, just make sure to remove the right clusters if you do this!
 
+N.B.
+DO NOT just remove the module from the ${iteration}Step sequence... this will cause that N+1 iteration to use the same clusters as the N-1 iteration.  THIS IS BAD.
+
+You can also mess with the parameters for the finding and fiitng by imorting the right files and changing the values appropriately (by changing the appropriate modules in ${iteration}Step_cff). 
 
 
 ### Changes for running own user MC on CMSSW_5_3_13 using recoTrack_MC_710_cfg.py
