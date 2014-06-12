@@ -97,8 +97,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
 	
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
 	
       done #end loop over modules for initialStep
       
@@ -110,8 +110,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
 	
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
 	
       done #end loop over modules for elif                                                                                                                                                                                    
       
@@ -123,8 +123,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
 	
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
 	
       done #end loop over modules for elif  - detachedTripletStep  
       
@@ -136,8 +136,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
 	
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv	
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv	
 
       done #end loop over modules for elif  - mixedTripletStep  
       
@@ -149,8 +149,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
       	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
 	
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
 
       done #end loop over next two iterations after mixed
       
@@ -159,8 +159,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
       grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
       grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
       
-      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_CPU.csv
-      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_REAL.csv
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_CPU.csv
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_REAL.csv
       
   elif [ $iteration = "ConvStep" ] ; then
       
@@ -170,8 +170,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
       	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
 	grep -x "[0-9]\.[0-9].*,$module" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
 	
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
-	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_CPU.csv
+	grep -x "[0.9]\.[0.9].*,$module" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$module" >> ${out_dir}/averages_REAL.csv
 	
       done #end loop over modules for elif  - ConvStep
       
@@ -180,8 +180,8 @@ for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep 
       grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_CPU.csv >> ${out_dir}/${iteration}_CPU_sorted.csv
       grep -x "[0-9]\.[0-9].*,$iteration" ${out_dir}/${iteration}_REAL.csv >> ${out_dir}/${iteration}_REAL_sorted.csv
       
-      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_CPU.csv
-      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1| awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_REAL.csv
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_CPU_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_CPU.csv
+      grep -x "[0.9]\.[0.9].*,$iteration" ${out_dir}/${iteration}_REAL_sorted.csv | printf "%s,%s\n" "$(cut -d "," -f 1 | awk '{sum+=$1};END{print sum/NR}' )" "$iteration" >> ${out_dir}/averages_REAL.csv
 
   fi # end if conditional to match iterativeTk sequence to right modules
   
@@ -191,15 +191,30 @@ done # end sort and averaging for each module
 
 # Remove unsorted files, only keep sorted
 
-for tkReco_module in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep generalTracks ConvStep conversionStepTracks #remove all csv files
+for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep generalTracks ConvStep conversionStepTracks #remove all csv files
   do
   
-  rm ${out_dir}/${tkReco_module}_CPU.csv
-  rm ${out_dir}/${tkReco_module}_REAL.csv
+  rm ${out_dir}/${iteration}_CPU.csv
+  rm ${out_dir}/${iteration}_REAL.csv
 
 done
 
 ##########################################
 
+# Get the total time per iterative step
 
 
+for iteration in initialStep lowPtTripletStep pixelPairStep detachedTripletStep mixedTripletStep pixelLessStep tobTecStep generalTracks ConvStep conversionStepTracks #begin loop over the iterations 
+  do
+
+  if [ $iteration != "ConvStep" ] ; then
+
+      grep "$iteration" ${out_dir}/averages_CPU.csv | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" >> ${out_dir}/totals.csv
+
+  else
+
+      grep -v "conversionStepTracks" ${out_dir}/averages_CPU.csv | grep -i "conv" | cut -d "," -f 1 | printf "%s,%s\n" "$(awk '{sum+=$1};END{print sum}')" "$iteration" ${out_dir}/totals.csv
+
+  fi
+
+done
