@@ -86,9 +86,36 @@ Check every now and then to see if the jobs completed with ```crab -status -c <u
 crab -getoutput -c <ui_working_dir>
 ```
 
-Once you have the stdout files, you can get the time profiling with: ```./getTimingModules.sh <input_dir> <out-dir>```
+Once you have the stdout files, you can get the time profiling with: ```./getTimingModules.sh <input_dir> <out_dir>```
 
-Make sure to specify the right path for the input stdout files (```<ui_working_dir>/res/``` -- res is where the stdouts are sitting)!  The output will be a .csv file for each iteration in the reco, containing the average time per event spent in a given module (in that particular iterative step) for each CRAB job.  Both CPU and wall clock time are recorded for each module.  The results for each module are then averaged over these csv files to produce an average module time per event for all events, stored in the averages csv files.  The total csv files then compute the total average time it takes for each iteration to complete for the dataset.  These files are located in ```<out-dir>```, specified by the user.
+Make sure to specify the right path for the input stdout files (```<ui_working_dir>/res/``` -- res is where the stdouts are sitting)!  The output will be a .csv file for each iteration in the reco, containing the average time per event spent in a given module (in that particular iterative step) for each CRAB job.  Both CPU and wall clock time are recorded for each module.  The results for each module are then averaged over these csv files to produce an average module time per event for all events, stored in the averages csv files.  The total csv files then compute the total average time it takes for each iteration to complete for the dataset.  These files are located in ```<out_dir>```, specified by the user.
+
+As a note, you of course do not have to run CRAB to produce the stdout files.  To use the getTimingModules.sh script, however, you will need to change where the stdout from the reco job is being read in.  If you run locally, just pipe it to whatever file you want and modify the script accordingly.
+
+### Use the output of getTimingModules.sh to produce Timing Plots. 
+
+N.B. I used 5_3_11 samples for these steps, which are effectively the same as the 5_3_13 samples.  I had to make some PhEDEx requests to have them put on the LPCCAF, which thankfully was not too terrible.  Let me know if you have questions on this.
+
+Okay, so now that the average files are produced, we need to run another script, makeTimingPlots.sh, which calls a ROOT macro TimingPlotsMacro.C.  This macro then uses a compiled program, RecoModuleTimingPlots.cpp to produce a series of plots.  It produces plots of the average time per module in a given iteration.  It also produces plots that add the time of each previous module in a given iteration.  After this, it produces plots for the total average time spent in each iteration, with a plot of the addition of each successive iteration.  This is done for both CPU time and wall clock time.  There are also some plots comparing the ratio of CPU/REAL time for each module/iteration.
+
+To produce plots, simply do:
+
+```./makeTimingPlots.sh <in_dir> <out_dir>```
+
+where ```<in_dir>``` is the directory which you outputed the files from ./getTimingModules.sh.  ```<out_dir>``` is where the ROOT files and .pngs will be saved.
+
+To view the files, open them in Terminal, Preview, ROOT, whatever is your fancy.
+
+To compare two samples that produced plots, you will need a second script, makeCompareTimingPlots.sh, which calls a second ROOT macro, CompareSamplesMacro.C.  This macro calls the compiled code, CompareRecoTimingSamples.cpp.  This code will take the histos of sample1 and divide them by the same histos found in sample2.  
+
+To run, do:
+
+```./makeCompareTimingPlots.sh <in_dir> <sample1_dir> <sample2_dir> <out_dir>```
+
+where ```<in_dir>``` is the one of the output directories used in ./getTimingModules.sh for either sample (a little hacky at the moment, need to get names of iterations and modules ... easiset way without restructuring everything).  The ```<sample?_dir>``` are the output directories from ./makeTimingPlots.sh of the samples you wish to compare.  The resulting pngs and ROOT file is saved in ```<out_dir>```.
+
+
+P.S. I was considering making histograms of the module timinng, but really this might not be worth it, as to do so would probably mean one event per one stdout file to get any sort of statistics.  Would be nice to know the distribution of the timing, could look into... Right now, I just use 100 jobs to split the 9000 events in each of the relVal samples.  
 
 ### Customize the iterations for Tracking using recoTrack_MC_5313_cfg.py
 
